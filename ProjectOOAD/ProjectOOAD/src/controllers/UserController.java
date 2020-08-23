@@ -66,20 +66,21 @@ public class UserController {
 	}
 	
 	public User UpdateProfile(String Usermame, String Password, String Role, Date DOB, String Address, String telp) {
-		User u = null;
+		User u = User.getByUname(Usermame);
+		
 		return u;
 	}
 	
  	public User resetPassword(String userID){
 		User.instance = User.get(userID);
 		String newpass = User.instance.getDOB().toString();
-		User.instance.setPassword(newpass);
+		User.instance.setPassword(newpass); 
 		
 		return User.instance;
 	}
 	
 	public User changePassword(String oldPass, String newPass) {
-		if(User.instance.getPassword() != oldPass) return null;
+		if(User.instance.checkPassword(oldPass)) return null;
 		
 		User.instance.setPassword(newPass);
 		
