@@ -33,9 +33,9 @@ public class TaskRequestHandler {
 	public static TaskRequest createTaskRequest(String title, UUID supervisorID, UUID workerID, String note) {
 		UUID id = UUID.randomUUID();
 		TaskRequest tr =  new TaskRequest(id, workerID, supervisorID, title, note);
-		tr.save();
+		
 	
-		return tr;
+		return tr.save();
 	}
 	
 	
