@@ -1,6 +1,6 @@
 package models;
 
-import java.awt.List;
+//import java.awt.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,7 +28,12 @@ public class Task {
 		this.workerID = workerID;
 		this.supervisorID = supervisorID;
 		this.title = title;
+		this.revisionCount = 0;
+		this.score = 0;
+		this.isSubmitted = false;
+		this.approvedAt = null;
 		this.note = note;
+		
 	}
 	
 	public Task() {
@@ -111,7 +116,7 @@ public class Task {
 		return null;
 	}
 	
-	public Task create(String title, UUID supervisorID, UUID workerID, String note) {
+	public static Task create(String title, UUID supervisorID, UUID workerID, String note) {
 		Task task = new Task(UUID.randomUUID(), title, supervisorID, workerID, note);
 		return task.save();
 	}
@@ -127,7 +132,7 @@ public class Task {
 			ps.setString(3, this.getSupervisorID().toString());
 			ps.setString(4, this.getWorkerID().toString());
 			ps.setString(5, this.getNote());
-			ps.executeQuery(query);
+			ps.execute();
 			
 		} catch (SQLException e) {
 			// TODO: handle exception
@@ -147,7 +152,7 @@ public class Task {
 			ps.setString(2, this.getSupervisorID().toString());
 			ps.setString(3, this.getWorkerID().toString());
 			ps.setString(4, this.getNote());
-			ps.executeQuery(query);
+			ps.execute();
 		} catch (SQLException e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
@@ -162,7 +167,7 @@ public class Task {
 		try {
 			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
 			ps.setString(1, id.toString());
-			ps.executeQuery(query);
+			ps.execute();
 		} catch (SQLException e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
@@ -179,7 +184,7 @@ public class Task {
 			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
 			ps.setString(1, by);
 			ps.setString(2, direction);
-			ResultSet rs = ps.executeQuery(query);
+			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
 				String taskID = rs.getString("taskID");
@@ -200,13 +205,13 @@ public class Task {
 	}
 	
 	public static ArrayList<Task> search(String query) {
-		String queryexe = query;
+		
 		PreparedStatement ps;
 		ArrayList<Task> list = new ArrayList<>();
 		
 		try {
-			ps = (PreparedStatement) Connector.getConnection().prepareStatement(queryexe);
-			ResultSet rs = ps.executeQuery(queryexe);
+			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
 				String taskID = rs.getString("taskID");
