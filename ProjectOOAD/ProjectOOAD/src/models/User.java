@@ -92,7 +92,7 @@ public class User {
 			ps.setString(5, this.telp);
 			ps.setString(6, this.id.toString());
 			
-			ps.execute();
+			ps.execute(query);
 			
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -101,7 +101,7 @@ public class User {
 		return this;
 	}
 	
-	public String delete(){
+	public boolean delete(){
 		String query = "DELETE FROM users WHERE id = " + this.id;
 		try {
 			Statement statement = Connector.getConnection().createStatement();
@@ -109,10 +109,10 @@ public class User {
 			
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-			return this.id.toString();
+			return true;
 		}
 		
-		return null;
+		return false;
 	}
 	
 	public static User get(String id) {
@@ -223,6 +223,11 @@ public class User {
 				System.out.println(e.getMessage());
 			}
 		return null;	
+	}
+	
+	public boolean checkPassword(String pass) {
+		if(pass == this.password)return true;
+		else return false;
 	}
 	
 	@Override
