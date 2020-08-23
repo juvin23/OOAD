@@ -26,10 +26,9 @@ public class TaskHandler {
 			return null;
 		}
 		
-		Task task = null;
-		task.create(title, UUID.fromString(supervisorID), UUID.fromString(workerID), note);
-		task.save();
-		return task;
+		Task task = Task.create(title, UUID.fromString(supervisorID), UUID.fromString(workerID), note); 
+		
+		return task.save();
 	}
 	
 	public Task updateTask(String taskID, String title, String workerID, String supervisorID, Integer score, String note) {
