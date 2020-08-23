@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import models.Notification;
+import models.Task;
 import models.TaskRequest;
 import models.User;
 import views.AllTaskRequestDisplay;
@@ -19,7 +20,7 @@ public class TaskRequestHandler {
 	
 	//gatau ini gayakin
 	public ArrayList<TaskRequest> getAllTaskRequest(){
-		User user = User.getUser("id");
+		User user = User.get("id");
 		return TaskRequest.getAll(user.getUserID().toString());
 	}
 	
@@ -55,8 +56,9 @@ public class TaskRequestHandler {
 			String supervisorId = tr.getSupervisorID().toString();
 			String workerId = tr.getWorkerID().toString();
 			String note = tr.getNote();
-			String trId = tr.delete().toString();
-			//createTask(title, supervisorId, workerId, note); do uncomment if the create already created on task class
+			tr.delete();
+			Task task = Task.create(title, UUID.fromString(supervisorId), UUID.fromString(workerId), note); //do uncomment if the create already created on task class
+			task.save();
 			//String message = "dunno";
 			//createNotification(id, message);
 			
