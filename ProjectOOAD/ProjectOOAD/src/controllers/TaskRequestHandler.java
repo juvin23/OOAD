@@ -1,10 +1,10 @@
 package controllers;
 
 import java.util.ArrayList;
-import java.util.List;
+//import java.util.List;
 import java.util.UUID;
 
-import models.Notification;
+//import models.Notification;
 import models.Task;
 import models.TaskRequest;
 import models.User;
@@ -56,13 +56,17 @@ public class TaskRequestHandler {
 			String supervisorId = tr.getSupervisorID().toString();
 			String workerId = tr.getWorkerID().toString();
 			String note = tr.getNote();
-			tr.delete();
+			String trId = tr.delete().toString();
 			Task task = Task.create(title, UUID.fromString(supervisorId), UUID.fromString(workerId), note); //do uncomment if the create already created on task class
 			task.save();
 			//String message = "dunno";
 			//createNotification(id, message);
 			
+			String message = "Your task request accepted!";
+			NotificationController.createNotification(UUID.fromString(id), message);
+			System.out.println("Successfully TR: "+ trId +"deleted");
 			System.out.println("Task Request accepted");
+			
 			return tr;
 		}
 		
@@ -73,22 +77,23 @@ public class TaskRequestHandler {
 		TaskRequest tr = TaskRequest.get(id);
 		if(tr == null) {
 			System.out.println("Not found");
-			//return null;
+			return null;
 		}
 		else {
-			String title = tr.getTitle();
-			String supervisorId = tr.getSupervisorID().toString();
-			String workerId = tr.getWorkerID().toString();
-			String note = tr.getNote();
-		
+//			String title = tr.getTitle();
+//			String supervisorId = tr.getSupervisorID().toString();
+//			String workerId = tr.getWorkerID().toString();
+//			String note = tr.getNote();
+//		
 			String trId = tr.delete().toString();
-			
-			//String message = "dunno";
-			//createNotification(id, message);
-			System.out.println("Successfully deleted");
-			//return tr;
+//			
+			String message = "Your task request rejected!";
+			NotificationController.createNotification(UUID.fromString(id), message);
+			System.out.println("Successfully TR: "+ trId +"deleted");
+			return tr;
 		}
-		return null;
+		
+		
 	}
 	
 }
