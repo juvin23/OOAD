@@ -1,6 +1,6 @@
 package models;
 
-import java.sql.Date;
+//import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -125,14 +125,15 @@ public class Notification {
 	public Notification update() {
 		String query = "UPDATE notifications SET"
 				+ " readAt = ?";
-		
+		this.setReadAt(new Timestamp(System.currentTimeMillis()));
 		try {
 			PreparedStatement ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
-			
+			SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD HH:MI:SS");
+			String insert = sdf.format(this.getReadAt()).toString();
+			ps.setString(1, insert);
 			ps.execute();
 			
 			return this;
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
