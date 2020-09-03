@@ -1,6 +1,5 @@
 package models;
 
-//import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -20,26 +19,15 @@ public class Notification {
 	
 	
 	//constructor
-
-	public Notification(UUID id, UUID userID, String message) {
+	public Notification(UUID id, UUID userID, String message, Timestamp readAt) {
 		super();
 		this.id = id;
 		this.userID = userID;
 		this.message = message;
-		//this.readAt = readAt;
-		this.readAt = null;
+		this.readAt = readAt;
+		//this.readAt = null;
 	}
 	
-	
-//	public static Notification getNotification(String id) {
-//		
-//		
-//		return null;
-//	}
-//	
-	
-	
-	//get satu notif ga ada di class diagram
 	
 	public static Notification get(String id) {
 	String query = "SELECT * from notifications where id = ?";
@@ -51,11 +39,11 @@ public class Notification {
 			rs.next();
 			
 			String notifId = rs.getString("id");
-			String userID = rs.getString("userID");
+			String userID = rs.getString("user_id");
 			String message = rs.getString("message");
-		
+			Timestamp readAt = rs.getTimestamp("read_at");
 			
-			return new Notification(UUID.fromString(notifId), UUID.fromString(userID), message);
+			return new Notification(UUID.fromString(notifId), UUID.fromString(userID), message, readAt);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -68,7 +56,7 @@ public class Notification {
 	
 	
 	public Notification save() {
-		String query = "INSERT INTO notifications VALUES(?, ?, ?, ?)";
+		String query = "INSERT INTO notifications VALUES(?, ?, ?)";
 		
 		try {
 			PreparedStatement ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
@@ -78,12 +66,11 @@ public class Notification {
 			
 			
 			//ResultSet rs = 
-			ps.executeQuery();
+			ps.executeUpdate();
 			//rs.next();
 			System.out.println("Successfuly inserted!!");
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -103,44 +90,69 @@ public class Notification {
 			
 			while(rs.next()) {
 				String id = rs.getString("id");
-				String user = rs.getString("userID");
+				String user = rs.getString("user_id");
 				String message = rs.getString("message");
-				String readAt = rs.getTimestamp("readAt").toString();
-				if(readAt != null) {
-					rs.next();
+				Timestamp readAt = rs.getTimestamp("read_at");
+				if(readAt == null) {
+					Notification temp = new Notification(UUID.fromString(id), UUID.fromString(user), message, readAt);
+					unreadNotif.add(temp);
 				}
-				Notification temp = new Notification(UUID.fromString(id), UUID.fromString(user), message);
-				unreadNotif.add(temp);
 			}
-			return unreadNotif;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return unreadNotif;
+	}
+	
+	//getAll
+	public static ArrayList<Notification>getAll(String userID){
+		String query = "SELECT * FROM notifications";
+		ArrayList<Notification> allNotif = new ArrayList<Notification>(); 
+		
+		try {
+			PreparedStatement ps;
+			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				String id = rs.getString("id");
+				String user = rs.getString("user_id");
+				String message = rs.getString("message");
+				Timestamp readAt = rs.getTimestamp("read_at");
+				
+				Notification temp = new Notification(UUID.fromString(id), UUID.fromString(user), message, readAt);
+				allNotif.add(temp);
+			}
+			
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		
-		return null;
+		return allNotif;
 	}
+		
 	public Notification update() {
 		String query = "UPDATE notifications SET"
-				+ " readAt = ?";
+				+ " read_at = ? where id =";
 		this.setReadAt(new Timestamp(System.currentTimeMillis()));
 		try {
 			PreparedStatement ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
 			SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD HH:MI:SS");
 			String insert = sdf.format(this.getReadAt()).toString();
-			ps.setString(1, insert);
-			ps.execute();
 			
-			return this;
+			ps.setString(1, insert);
+			ps.setString(2, this.id.toString());
+			ps.executeUpdate();
+			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return null;
-		
 	}
 	
 	
