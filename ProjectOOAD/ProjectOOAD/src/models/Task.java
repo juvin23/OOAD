@@ -1,296 +1,265 @@
 package models;
 
-//import java.awt.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.UUID;
+
 
 import connection.Connector;
 
-public class Task {
+
+public class User {
 	private UUID id;
-	private UUID workerID;
-	private UUID supervisorID;
-	private String title;
-	private Integer revisionCount;
-	private Integer score;
-	private Boolean isSubmitted;
-	private Timestamp approvedAt;
-	private String note;
+	private String username;
+	private String password;
+	private String role;
+	private String address;
+	private Date DOB;
+	private String telp;
+	
+	public static User instance;
+	
+	/*
+	  `id` char(36) NOT NULL,
+	  `username` varchar(20) NOT NULL,
+	  `password` varchar(100) NOT NULL,
+	  `role` varchar(10) NOT NULL,
+	  `address` varchar(100) NOT NULL,
+	  `DOB` date NOT NULL,
+	  `telp` varchar(15) NOT NULL
+	 */
+
 	
 	//constructor
-	public Task(UUID id, String title, UUID supervisorID, UUID workerID, String note) {
+	public User(UUID id, String username, String password, String role, String address, Date dOB, String telp) {
 		super();
 		this.id = id;
-		this.workerID = workerID;
-		this.supervisorID = supervisorID;
-		this.title = title;
-		this.revisionCount = 0;
-		this.score = 0;
-		this.isSubmitted = false;
-		this.approvedAt = null;
-		this.note = note;
+		this.username = username;
+		this.password = password;
+		this.role = role;
+		this.address = address;
+		this.DOB = dOB;
+		this.telp = telp;
+	}
+
+	
+	public User() {
 		
 	}
 	
-	public Task() {
+	
+	public User create(String username, String password, String role, String address, Date dob, String telp) {
+		User u = new User(UUID.randomUUID(), username, password, role, address, DOB, telp);
 		
+		return u.Save();
 	}
 	
-	public static Task getTask(String id) {
-		String query = "SELECT * from tasks where id = ?";
+	public User Save() {
+	
+		String query = "INSERT INTO users (id, username, password, role, address, DOB, telp) VALUES (? , ? , ? , ? , ? , ? , ?)";
+		try {
+			PreparedStatement ps = Connector.getConnection().prepareStatement(query);
+			
+			ps.setString(1, this.id.toString());
+			ps.setString(2, this.username);
+			ps.setString(3, this.password);
+			ps.setString(4, this.role);
+			ps.setString(5, this.address);
+			ps.setDate(6, DOB);
+			ps.setString(7, this.telp);
+			ps.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 		
-		PreparedStatement ps;
-		try {
-			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
-			ps.setString(1, id);
-			ResultSet rs = ps.executeQuery();
-			rs.next();
-			
-			
-			String taskID = rs.getString("taskID");
-			String workerID =rs.getString("workerID");
-			String supervisorID =rs.getString("supervisorID");
-			String title =rs.getString("title");
-			String note = rs.getString("note");
-			
-			return new Task(UUID.fromString(taskID), title, UUID.fromString(supervisorID), UUID.fromString(workerID), note);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}
-		return null;
+		return this;
 	}
-	
-	public static ArrayList<Task> getAllTask() {
-		String query = "SELECT * from tasks";
-		ArrayList<Task> list = new ArrayList<Task>();
-		PreparedStatement ps;
+
+	public User Update() {
+		String query = "UPDATE Users SET username = ?, password = ?, role = ?, address = ?, telp = ? WHERE id = ?";
 		try {
-			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()) {
-				String taskID = rs.getString("taskID");
-				String workerID =rs.getString("workerID");
-				String supervisorID =rs.getString("supervisorID");
-				String title =rs.getString("title");
-				String note = rs.getString("note");
-				
-				Task task = new Task(UUID.fromString(taskID), title, UUID.fromString(supervisorID), UUID.fromString(workerID), note);
-				list.add(task);
-			}			
-			return list;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}
-		return null;
-	}
-	
-	public static Task getByTitle(String title) {
-		String query = "SELECT * FROM users WHERE title = ?";
-	
-		PreparedStatement ps;
-		try {
-			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
-			ps.setString(1, title);
-			ResultSet rs = ps.executeQuery();
-			if(rs.next()) {
-				String taskID = rs.getString("taskID");
-				String workerID =rs.getString("workerID");
-				String supervisorID =rs.getString("supervisorID");
-				String titles =rs.getString("title");
-				String note = rs.getString("note");
-				
-				Task task = new Task(UUID.fromString(taskID), titles, UUID.fromString(supervisorID), UUID.fromString(workerID), note);
-				return task;
-			}
+			PreparedStatement ps =  (PreparedStatement) Connector.getConnection().prepareStatement(query);
+			
+			ps.setString(1, this.username);
+			ps.setString(2, this.password);
+			ps.setString(3, this.role);
+			ps.setString(4, this.address);
+			ps.setString(5, this.telp);
+			ps.setString(6, this.id.toString());
+			
+			ps.executeUpdate();
 			
 		} catch (SQLException e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
 		}
-		return null;
-	}
-	
-	public static Task create(String title, UUID supervisorID, UUID workerID, String note) {
-		Task task = new Task(UUID.randomUUID(), title, supervisorID, workerID, note);
-		return task.save();
-	}
-	
-	public Task save() {
-		String query = "INSERT INTO tasks() VALUES(?,?,?,?,?)";
 		
-		PreparedStatement ps;
-		try {
-			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
-			ps.setString(1, this.getId().toString());
-			ps.setString(2, this.getTitle());
-			ps.setString(3, this.getSupervisorID().toString());
-			ps.setString(4, this.getWorkerID().toString());
-			ps.setString(5, this.getNote());
-			ps.execute();
-			
-		} catch (SQLException e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-		}
 		return this;
 	}
 	
-	public Task update() {
-		String query = "UPDATE task SET title = ?, supervisorID = ?, workerID = ?, note = ?";
-		
-		PreparedStatement ps;
+	public UUID delete(){
+		String query = "DELETE FROM users WHERE id = " + this.id.toString();
 		try {
-			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
-			
-			ps.setString(1, this.getTitle());
-			ps.setString(2, this.getSupervisorID().toString());
-			ps.setString(3, this.getWorkerID().toString());
-			ps.setString(4, this.getNote());
-			ps.execute();
+			PreparedStatement ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
+			ps.executeUpdate();
 		} catch (SQLException e) {
-			// TODO: handle exception
 			System.out.println(e.getMessage());
+			return null;
 		}
-		return null;
+		return this.id;
+		
 	}
 	
-	public UUID delete() {
-		String query = "DELETE FROM task where id = ?";
-		
-		PreparedStatement ps;
+	public static User get(String id) {
+		String query = "SELECT * FROM USER WHERE ID = ?";
 		try {
-			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
-			ps.setString(1, id.toString());
-			ps.execute();
-		} catch (SQLException e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-		}
-		return null;
+			
+			PreparedStatement ps =  (PreparedStatement) Connector.getConnection().prepareStatement(query);
+			ps.setString(1, id);
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			String userID = rs.getString("id");
+			String username= rs.getString("username");
+			String password =rs.getString("password");
+			String role = rs.getString("role");
+			String address = rs.getString("address");
+			Date dOB = rs.getDate("DOB");
+			String telp = rs.getString("telp");
+			
+			
+			return new User(UUID.fromString(userID), username, password, role, address, dOB, telp);
+			
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
+			
+		return null;	
 	}
-
-	public static ArrayList<Task> sort(String by, String direction) {
-		String query = "SELECT * FROM task ORDER BY ? ?";
-		PreparedStatement ps;
-		ArrayList<Task> list = new ArrayList<>();
-		
+	
+	public static User getByUname(String uname) {
+		String query = "SELECT * FROM Users WHERE username = ?";
 		try {
-			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
-			ps.setString(1, by);
-			ps.setString(2, direction);
+			PreparedStatement ps =  (PreparedStatement) Connector.getConnection().prepareStatement(query);
+			ps.setString(1, uname);
+			ResultSet rs = ps.executeQuery();
+			
+			if(!rs.next()) return null;
+			String userID = rs.getString("id");
+			String username= rs.getString("username");
+			String password =rs.getString("password");
+			String role = rs.getString("role");
+			String address = rs.getString("address");
+			Date dOB = rs.getDate("DOB");
+			String telp = rs.getString("telp");
+			User u = new User(UUID.fromString(userID), username, password, role, address, dOB, telp);
+			System.out.println(u);
+			System.out.println(u.getPassword());
+			
+			return u;
+			}catch (SQLException e){
+				System.out.println(e.getMessage());
+			}
+		return null;	
+	}
+	
+	public static ArrayList<User> getAll() {
+		String query = "SELECT * FROM users";
+		try {
+			ArrayList<User> ret = new ArrayList<>();
+			PreparedStatement ps =  (PreparedStatement) Connector.getConnection().prepareStatement(query);
+			
+			ResultSet rs = ps.executeQuery();
+			System.out.println(ps);
+			
+			while(rs.next()) {
+				String userID = rs.getString("id");
+				String username= rs.getString("username");
+				String password =rs.getString("password");
+				String role = rs.getString("role");
+				String address = rs.getString("address");
+				Date DOB = rs.getDate("DOB");
+				String telp = rs.getString("telp");
+				User u = new User(UUID.fromString(userID), username, password, role, address, DOB, telp);
+				ret.add(u);
+			}
+			return ret;
+			
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
+		return null;	
+	}
+	
+	public static ArrayList<User> getUserByRole(String Role) {
+		String query = "SELECT * FROM USER WHERE role = ?";
+		try {
+			ArrayList<User> ret = new ArrayList<>();
+			PreparedStatement ps =  (PreparedStatement) Connector.getConnection().prepareStatement(query);
+			
+			
+			ps.setString(1, Role);
 			ResultSet rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				String taskID = rs.getString("taskID");
-				String workerID =rs.getString("workerID");
-				String supervisorID =rs.getString("supervisorID");
-				String title =rs.getString("title");
-				String note = rs.getString("note");
+				String userID = rs.getString("id");
+				String username= rs.getString("username");
+				String password =rs.getString("password");
+				String role = rs.getString("role");
+				String address = rs.getString("address");
+				Date DOB = rs.getDate("DOB");
+				String telp = rs.getString("telp");
+				User u = new User(UUID.fromString(userID), username, password, role, address, DOB, telp);
 				
-				Task task = new Task(UUID.fromString(taskID), title, UUID.fromString(supervisorID), UUID.fromString(workerID), note);
-				list.add(task);
+				ret.add(u);
 			}
-			return list;
-		} catch (SQLException e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-		}
-		return null;
+			return ret;
+			
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
+		return null;	
 	}
 	
-	public static ArrayList<Task> search(String query) {
-		
-		PreparedStatement ps;
-		ArrayList<Task> list = new ArrayList<>();
-		
-		try {
-			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
-			ResultSet rs = ps.executeQuery();
-			
-			while(rs.next()) {
-				String taskID = rs.getString("taskID");
-				String workerID =rs.getString("workerID");
-				String supervisorID =rs.getString("supervisorID");
-				String title =rs.getString("title");
-				String note = rs.getString("note");
-				
-				Task task = new Task(UUID.fromString(taskID), title, UUID.fromString(supervisorID), UUID.fromString(workerID), note);
-				list.add(task);
-			}
-			return list;
-		} catch (SQLException e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-		}
-		return null;
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
 	}
-
+	
 	//setter and getter
-	public UUID getWorkerID() {
-		return workerID;
+	public String getUsername() {
+		return username;
 	}
 	
-	public void setWorkerID(UUID workerID) {
-		this.workerID = workerID;
+	public String getRole() {
+		return role;
 	}
-	public UUID getSupervisorID() {
-		return supervisorID;
+	
+	public String getAddress() {
+		return address;
 	}
-	public void setSupervisorID(UUID supervisorID) {
-		this.supervisorID = supervisorID;
+	
+	public Date getDOB() {
+		return DOB;
 	}
-	public String getTitle() {
-		return title;
+	
+	public String getTelp() {
+		return telp;
 	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public Integer getRevisionCount() {
-		return revisionCount;
-	}
-	public void setRevisionCount(Integer revisionCount) {
-		this.revisionCount = revisionCount;
-	}
-	public Boolean getIsSubmitted() {
-		return isSubmitted;
-	}
-	public void setIsSubmitted(Boolean isSubmitted) {
-		this.isSubmitted = isSubmitted;
-	}
-	public UUID getId() {
+	
+	public UUID getUserID() {
 		return id;
 	}
-
-	public void setId(UUID id) {
-		this.id = id;
-	}
-
-	public Timestamp getApprovedAt() {
-		return approvedAt;
-	}
-	public void setApprovedAt(Timestamp approvedAt) {
-		this.approvedAt = approvedAt;
-	}
-	public String getNote() {
-		return note;
-	}
-	public void setNote(String note) {
-		this.note = note;
+	
+	public void setPassword(String pass) {
+		this.password = pass;
 	}
 	
-	public Integer getScore() {
-		return score;
+	public String getPassword() {
+		return this.password;
 	}
-	
-	public void setScore(Integer score) {
-		this.score = score;
-	}
-
 	
 }
