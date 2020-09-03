@@ -3,7 +3,6 @@ package models;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.UUID;
@@ -42,7 +41,7 @@ public class User {
 		this.password = password;
 		this.role = role;
 		this.address = address;
-		DOB = dOB;
+		this.DOB = dOB;
 		this.telp = telp;
 	}
 
@@ -71,7 +70,7 @@ public class User {
 			ps.setString(5, this.address);
 			ps.setDate(6, DOB);
 			ps.setString(7, this.telp);
-			ps.execute();
+			ps.executeUpdate();
 			
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -92,7 +91,7 @@ public class User {
 			ps.setString(5, this.telp);
 			ps.setString(6, this.id.toString());
 			
-			ps.execute(query);
+			ps.executeUpdate();
 			
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -101,18 +100,17 @@ public class User {
 		return this;
 	}
 	
-	public boolean delete(){
-		String query = "DELETE FROM users WHERE id = " + this.id;
+	public UUID delete(){
+		String query = "DELETE FROM users WHERE id = " + this.id.toString();
 		try {
-			Statement statement = Connector.getConnection().createStatement();
-			statement.execute(query);
-			
+			PreparedStatement ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
+			ps.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-			return true;
+			return null;
 		}
+		return this.id;
 		
-		return false;
 	}
 	
 	public static User get(String id) {
@@ -225,11 +223,6 @@ public class User {
 		return null;	
 	}
 	
-	public boolean checkPassword(String pass) {
-		if(pass == this.password)return true;
-		else return false;
-	}
-	
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
@@ -264,5 +257,9 @@ public class User {
 	public void setPassword(String pass) {
 		this.password = pass;
 	}
-
+	
+	public String getPassword() {
+		return this.password;
+	}
+	
 }
