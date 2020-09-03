@@ -17,9 +17,7 @@ public class TaskRequest {
 	private UUID supervisorID;
 	private String title;
 	private String note;
-
 	
-	//constructor
 	public TaskRequest(UUID id, UUID workerID, UUID supervisorID, String title, String note) {
 		super();
 		this.id = id;
@@ -28,9 +26,7 @@ public class TaskRequest {
 		this.title = title;
 		this.note = note;
 	}
-	
-	//done
-	//get(id)
+
 	public static TaskRequest get(String id) {
 		String query = "SELECT * from task_requests where id = ?";
 		
@@ -54,8 +50,7 @@ public class TaskRequest {
 		
 		return null;
 	}
-	//should be done
-	//getAll(userID)
+	
 	public static ArrayList<TaskRequest> getAll(String userID){
 		String query = "SELECT * FROM task_requests";
 		ArrayList<TaskRequest> taskRequestList = new ArrayList<TaskRequest>();
@@ -86,9 +81,7 @@ public class TaskRequest {
 		return null;
 		
 	}
-	//gatau ini salah fix, masi belom paham 
 	
-	//delete()
 	public UUID delete() {
 		String query = "DELETE FROM task_requests"
 				+ "WHERE = ?";
@@ -97,19 +90,18 @@ public class TaskRequest {
 			PreparedStatement ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
 			
 			ps.setString(1, this.id.toString());
-			ps.execute();
+			ps.executeUpdate();
 			
 			System.out.println("Successfully Deleted!");
-			//return 
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	
 		return this.id;
 	}
 	
-	//save()
 	public TaskRequest save() {
 		
 		String query = "INSERT INTO task_requests VALUES(?, ?, ? , ?, ?)";
@@ -120,21 +112,19 @@ public class TaskRequest {
 			ps.setString(2, this.workerID.toString());
 			ps.setString(3, this.supervisorID.toString());
 			ps.setString(4, this.title);
-			ps.setString(5, this.note);
+			ps.setString(5, this.note); 
+			ps.executeUpdate();
 			
-			//ResultSet rs = 
-			ps.execute();
-			//rs.next();
 			System.out.println("Successfuly inserted!!");
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+	
 			e.printStackTrace();
 		}
 		
 		return this;
 	}
-	//gw ga nemu yang fungsi update dimana kepakenya 
+	 
 	public TaskRequest update() {
 		String query = "UPDATE task_requests SET"
 				+ " workerID = ?, supervisorID = ?, title = ?, note = ?";
@@ -147,7 +137,7 @@ public class TaskRequest {
 			ps.setString(4, note);
 			
 			
-			ps.execute();
+			ps.executeUpdate();
 			
 			return this;
 		} catch (SQLException e) {
@@ -194,5 +184,8 @@ public class TaskRequest {
 	public void setId(UUID id) {
 		this.id = id;
 	}
+	
+	
+	
 	
 }
