@@ -25,6 +25,7 @@ public class Utils {
 			System.out.println("Username is not valid");
 			ret = false;
 		}
+		if(!role.equals("Admin") && !role.equals("Supervisor") && !role.equals("Worker")) ret = false;
 		
 		if(!isDateValid(DOB)) {
 			System.out.println("DOB is not Valid");
@@ -45,5 +46,15 @@ public class Utils {
 			return false;
 		}
 	}
+	
+	public static Boolean validateTask(String title, String note) {
+		if(title.length() < 5 || title.length() > 20) return false;
+		if(note.length() == 0) return false;
+		
+		
+		
+		return true;
+	}
+	
 
 }
