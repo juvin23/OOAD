@@ -1,124 +1,146 @@
 package views;
 
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import java.awt.FlowLayout;
+
+import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
-import controllers.TaskRequestHandler;
 import models.TaskRequest;
+import models.User;
 
-public class AllTaskRequestDisplay extends JPanel{
+import javax.swing.JLabel;
+import java.awt.BorderLayout;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import controllers.TaskRequestHandler;
+//import helpers.Env;
+//import helpers.Utils;
 
+public class AllTaskRequestDisplay extends JPanel {
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public AllTaskRequestDisplay(){
-		// TODO Auto-generated constructor stub
-		
-		
-		
-		//masi 1 layer, gw pikirnya ini harusnya bisa pake bbrp layer frame  biar lebih rapi
-		
+	private JFrame frame;
+	private JTable table;
+	private DefaultTableModel model;
 	
-		this.setLayout(null);
-		this.setBorder(new EmptyBorder(50, 80, 100, 30));// atas, kiri, bawah kanan
-		this.add(new JLabel("All Task Request"));
+	
+	/**
+	 * Launch the application.
+	 */
+	
+	/**
+	 * Create the application.
+	 */
+	public AllTaskRequestDisplay() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		//accept button masih barbar
-		JButton AcceptButton = new JButton("Accept");
-		AcceptButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				//get info yang diperluin
-				
-				JLabel label_id = new JLabel("Task Request Id: ");
-				label_id.setFont(new Font("Times New Roman", Font.PLAIN, 32));
-				add(label_id);
-				//set posisinya?
-				JTextField id = new JTextField();
-				add(id);
-				
-				
-				JButton proceedButton = new JButton("Proceed");
-				proceedButton.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-						TaskRequestHandler.acceptTaskRequest(id.getText());
-						
-					}
-				});
+		String supervisorID = User.instance.getUserID().toString();
+		
+		
+		JPanel panel = new JPanel();
+		frame.getContentPane().add(panel, BorderLayout.NORTH);
+		
+		JLabel lblNewLabel = new JLabel("All Task Request Display");
+		panel.add(lblNewLabel);
+		
+		JPanel panel_1 = new JPanel();
+		frame.getContentPane().add(panel_1, BorderLayout.WEST);
+		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JLabel lblNewLabel_1 = new JLabel("SupervisorID: "+ supervisorID);
+		panel_1.add(lblNewLabel_1);
+		
+		JPanel panel_2 = new JPanel();
+		frame.getContentPane().add(panel_2, BorderLayout.SOUTH);
+		
+		JButton btnNewButton = new JButton("Accept");
+		panel_2.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Reject");
+		panel_2.add(btnNewButton_1);
+		
+		JButton btnNewButton_2 = new JButton("Back to Main");
+		panel_2.add(btnNewButton_2);
+		
+		JPanel panel_3 = new JPanel();
+		frame.getContentPane().add(panel_3, BorderLayout.CENTER);
+		
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String id = (String) table.getValueAt(table.getSelectedRow(), 0);
+				TaskRequestHandler.acceptTaskRequest(id);
+				loadRow();
+			}
+		});
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String id = (String) table.getValueAt(table.getSelectedRow(), 0);
+				TaskRequestHandler.rejectTaskRequest(id);
+				loadRow();
+			}
+		});
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//calling main menu
 				
 			}
 		});
-		//reject task masih barbar
-		JButton RejectButton = new JButton("Accept");
-		RejectButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
-				//get info yang diperluin
-				JLabel label_id = new JLabel("Task Request Id: ");
-				label_id.setFont(new Font("Times New Roman", Font.PLAIN, 32));
-				add(label_id);
-				//set posisinya?
-				JTextField id = new JTextField();
-				add(id);
-				
-				
-				
-				JButton proceedButton = new JButton("Proceed");
-				proceedButton.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-						TaskRequestHandler.rejectTaskRequest(id.getText());
-						
-					}
-				});
+		
+		//table panel
+		JScrollPane scrollPane = new JScrollPane();
+		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+
+		model = new DefaultTableModel();
+		//model.setColumnIdentifiers(Utils.TASKREQUESTHEADER);
+		loadRow();
+		table = new JTable(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Task ID", "Worker ID", "Title", "Note"
 			}
-		});
-		
-		
-		
-		JButton CreateButton = new JButton("Create");
-		CreateButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				//bikin buat dapetin title dll.
-				
-				
-				
-				
-				
-				TaskRequestHandler.createTaskRequest(title, supervisorID, workerID, note);
-			}
-		});
-		
-		this.setVisible(true);
-		
-		
+		));
+		scrollPane.setViewportView(table);
+
+	
 	}
 	
 	
-	 
 	
+	public void loadRow() {
+		model.setRowCount(0);
+		ArrayList<TaskRequest> trList = TaskRequestHandler.getAllTaskRequest();
+		for(TaskRequest tr : trList) {
+			
+			if(tr.getSupervisorID().toString().equals(User.instance.getUserID().toString())) {
+				String taskID = tr.getId().toString();
+				String workerID = User.get(tr.getWorkerID().toString()).getUsername();
+				String title = tr.getTitle();
+				String note = tr.getNote();
+				
+				model.addRow(new Object[] {taskID,  workerID, title, note});
+			}
+			
+		}
 
-	
+	}
 }
