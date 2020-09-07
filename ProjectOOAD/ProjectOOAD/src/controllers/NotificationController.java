@@ -13,17 +13,16 @@ public class NotificationController {
 	//create
 	public static Notification createNotification(UUID userID, String message) {
 		
-		Notification ntf = new Notification(UUID.randomUUID(),userID, message);
-		
+		Notification ntf = new Notification(UUID.randomUUID(),userID, message, null);
 		return ntf.save();
 	}
 	//getAllNotification
-	public ArrayList<Notification> getAllNotification(){
+	public static ArrayList<Notification> getAllNotification(){
 		User user = User.get("id");
 		return Notification.getAll(user.getUserID().toString());
 	}
 	
-	public void readAllNotification(UUID userID) {
+	public static void readAllNotification(UUID userID) {
 		ArrayList<Notification> ntfList = new ArrayList<Notification>();
 		ntfList = Notification.getAll(userID.toString());
 		for(Notification ntf: ntfList) {
