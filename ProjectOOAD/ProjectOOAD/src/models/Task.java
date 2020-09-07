@@ -65,7 +65,7 @@ public class Task {
 		return null;
 	}
 	
-	public static ArrayList<Task> getAllTask() {
+	public static ArrayList<Task> getAll() {
 		String query = "SELECT * from tasks";
 		ArrayList<Task> list = new ArrayList<Task>();
 		PreparedStatement ps;
@@ -91,7 +91,7 @@ public class Task {
 	}
 	
 	public static Task getByTitle(String title) {
-		String query = "SELECT * FROM users WHERE title = ?";
+		String query = "SELECT * FROM tasks WHERE title = ?";
 	
 		PreparedStatement ps;
 		try {
