@@ -1,9 +1,11 @@
 package models;
 
+import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+//import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -17,15 +19,12 @@ public class Notification {
 	private String message;
 	private Timestamp readAt;
 	
-	
-	//constructor
 	public Notification(UUID id, UUID userID, String message, Timestamp readAt) {
 		super();
 		this.id = id;
 		this.userID = userID;
 		this.message = message;
 		this.readAt = readAt;
-		//this.readAt = null;
 	}
 	
 	
@@ -136,18 +135,22 @@ public class Notification {
 		
 	public Notification update() {
 		String query = "UPDATE notifications SET"
-				+ " read_at = ? where id =";
-		this.setReadAt(new Timestamp(System.currentTimeMillis()));
+				+ " read_at = ? WHERE id =";
+		//this.setReadAt(new Timestamp(System.currentTimeMillis()));
 		try {
-			PreparedStatement ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
-			SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD HH:MI:SS");
-			String insert = sdf.format(this.getReadAt()).toString();
+			//PreparedStatement ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
+			//SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD HH:MI:SS");
+			//String insert = sdf.format(this.getReadAt()).toString();
 			
-			ps.setString(1, insert);
+			//ps.setString(1, insert);
+			//ps.setString(2, this.id.toString());
+			//ps.executeUpdate();
+			PreparedStatement ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
+			Date dt = new Date();
+			Object ts = new Timestamp(dt.getTime());
+			ps.setObject(1, ts);
 			ps.setString(2, this.id.toString());
 			ps.executeUpdate();
-			
-
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
