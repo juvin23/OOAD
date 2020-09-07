@@ -149,8 +149,6 @@ public class TaskRequest {
 		
 	}
 	
-	
-	
 	//setter getter
 	public UUID getWorkerID() {
 		return workerID;
@@ -184,8 +182,4 @@ public class TaskRequest {
 	public void setId(UUID id) {
 		this.id = id;
 	}
-	
-	
-	
-	
 }
