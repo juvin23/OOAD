@@ -1,0 +1,154 @@
+package views;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Vector;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+import controllers.UserController;
+import helpers.ButtonRenderer;
+import models.User;
+
+public class AdminView extends JFrame implements MouseListener,ActionListener{
+	private static final long serialVersionUID = 1L;
+	private DefaultTableModel dtm;
+	private JTable table;
+	private Vector<Vector<String>> Data = new Vector<>();
+	private UserController uc = new UserController();
+	public JButton btnCreateUser = new JButton();
+	
+	private static AdminView av;
+	
+	public static AdminView getInstance() {
+		if(av == null) {
+			av = new AdminView();
+		}
+		
+		return av;
+	}
+	
+	public AdminView() {
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLayout(new BorderLayout());
+		this.setSize(new Dimension(600,400));
+		
+		btnCreateUser.setText("New User");
+		this.add(btnCreateUser,BorderLayout.SOUTH);
+		
+		JLabel Header = new JLabel("Admin");
+		Header.setFont(new Font("Sitka Banner", Font.PLAIN, 20));
+
+		viewAllUser();
+	}
+	
+	
+	private void initData() {
+		ArrayList<User> users = uc.getAllUser();
+		
+		for (User u : users) {
+			Vector<String> user = new Vector<>();
+			user.add(u.getUserID()+"");
+			user.add(u.getUsername());
+			user.add(u.getRole());
+			user.add(u.getAddress());
+			user.add(u.getDOB()+"");
+			user.add(u.getTelp());
+			user.add("reset");
+			user.add("delete");
+			
+			Data.add(user);
+		}
+	}
+	
+	private Vector<String> getHeader(){
+		Vector<String> header = new Vector<>();
+		header.add("User Id");
+		header.add("Username");
+		header.add("Role");
+		header.add("Address");
+		header.add("DOB");		
+		header.add("Phone");
+		header.add("reset");
+		header.add("delete");
+		
+		return header;
+	}
+
+	private void viewAllUser() {
+		dtm = new DefaultTableModel(Data, getHeader());
+		initData();
+		table = new JTable();
+		table.setModel(dtm);
+
+		table.setPreferredScrollableViewportSize(table.getPreferredSize());
+		table.addMouseListener(this);
+		
+		table.getColumn("reset").setCellRenderer(new ButtonRenderer());
+		table.getColumn("delete").setCellRenderer(new ButtonRenderer());
+		
+		this.add(new JScrollPane(table),BorderLayout.CENTER);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		String cmd = (String) table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
+		String id = (String) table.getValueAt(table.getSelectedRow(), 0);
+		if(cmd == "reset") {
+			uc.resetPassword(id);
+			JOptionPane.showMessageDialog(null, "Password of " + id +" is set to default (yyyy-MM-dd)!");
+			this.dispose();
+			MainDisplay.getInstance().setVisible(true);
+		}else if(cmd == "delete") {
+			if(uc.deleteUser(id) != null)JOptionPane.showMessageDialog(null, "User Deleted!");
+			else JOptionPane.showMessageDialog(null, "Unknown Error");
+		}
+	}
+
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+}
