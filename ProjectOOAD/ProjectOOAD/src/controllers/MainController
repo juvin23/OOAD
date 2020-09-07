@@ -1,0 +1,71 @@
+package controllers;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
+
+import helpers.Env;
+import views.AdminView;
+import views.Login;
+import views.MainDisplay;
+import views.ProfileDisplay;
+
+public class MainController {
+	TaskHandler th = new TaskHandler();
+	UserController uc = new UserController();
+	Login login = new Login(); 
+	
+	
+	public void UserLogin(){
+		
+		
+		login.btnLogin.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Env.user = uc.UserLogin(login.Username.getText(), login.password.getText());
+					login.dispose();
+					if(Env.user.getRole().contains("admin"))AdminView.getInstance().setVisible(true);
+					else if(Env.user.getRole().contains("worker")) displayHomeView();
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, "invalid credential","error",JOptionPane.ERROR_MESSAGE);
+					login.Username.setText(null);
+					login.password.setText(null);
+				}
+			}
+		});
+		
+		
+	}
+	
+	public void displayHomeView() {
+			try {
+				MainDisplay.getInstance().profileDisplay.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						MainDisplay.getInstance().setVisible(false);
+						ProfileDisplay.getInstance(Env.user).setVisible(true);;
+					}
+				});
+				
+				MainDisplay.getInstance().createTask.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						MainDisplay.getInstance().setVisible(false);
+						
+					}
+				});
+				
+				MainDisplay.getInstance().NotifHistory.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						
+					}
+				});
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+	}
+}
