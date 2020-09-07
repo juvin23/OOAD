@@ -1,0 +1,58 @@
+package views;
+
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+
+import helpers.Env;
+
+import javax.swing.JLabel;
+
+import javax.swing.JButton;
+import javax.swing.JPasswordField;
+import javax.swing.JSeparator;
+
+public class Login extends JFrame{
+	private static final long serialVersionUID = 1L;
+	public JTextField Username;
+	public JPasswordField password;
+	public JButton btnLogin;
+	
+	public Login() {
+		this.setBounds(300, 500, 300, 300);
+		this.setLocation(Env.dim.width/2-this.getSize().width/2, Env.dim.height/2-this.getSize().height/2);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		getContentPane().setLayout(null);
+		
+		Username = new JTextField();
+		Username.setToolTipText("Username");
+		Username.setBounds(117, 78, 113, 20);
+		this.getContentPane().add(Username);
+		Username.setColumns(10);
+		
+		JLabel lblUsername = new JLabel("Username");
+		lblUsername.setBounds(45, 81, 62, 14);
+		this.getContentPane().add(lblUsername);
+		
+		JLabel lblPassword = new JLabel("Password");
+		lblPassword.setBounds(45, 130, 60, 14);
+		this.getContentPane().add(lblPassword);
+		
+		JLabel lbLogin = new JLabel("User Login");;
+		lbLogin.setBounds(117, 10, 140, 36);
+		this.getContentPane().add(lbLogin);
+		
+		btnLogin = new JButton("Login");
+	
+		btnLogin.setBounds(45, 174, 185, 23);
+		this.getContentPane().add(btnLogin);
+		
+		password = new JPasswordField();
+		password.setBounds(117, 123, 113, 20);
+		this.getContentPane().add(password);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(25, 57, 237, 2);
+		getContentPane().add(separator);
+		this.setVisible(true);
+	}
+}
