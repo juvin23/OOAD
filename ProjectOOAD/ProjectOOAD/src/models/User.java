@@ -3,6 +3,7 @@ package models;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.UUID;
@@ -20,7 +21,6 @@ public class User {
 	private Date DOB;
 	private String telp;
 	
-	public static User instance;
 	
 	/*
 	  `id` char(36) NOT NULL,
@@ -41,7 +41,7 @@ public class User {
 		this.password = password;
 		this.role = role;
 		this.address = address;
-		this.DOB = dOB;
+		DOB = dOB;
 		this.telp = telp;
 	}
 
@@ -70,7 +70,7 @@ public class User {
 			ps.setString(5, this.address);
 			ps.setDate(6, DOB);
 			ps.setString(7, this.telp);
-			ps.executeUpdate();
+			ps.execute();
 			
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -91,30 +91,30 @@ public class User {
 			ps.setString(5, this.telp);
 			ps.setString(6, this.id.toString());
 			
-			ps.executeUpdate();
+			ps.execute();
 			
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
-		
 		return this;
 	}
 	
-	public UUID delete(){
-		String query = "DELETE FROM users WHERE id = " + this.id.toString();
+	public boolean delete(){
+		String query = "DELETE FROM users WHERE id = " + this.id;
 		try {
-			PreparedStatement ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
-			ps.executeUpdate();
+			Statement statement = Connector.getConnection().createStatement();
+			statement.execute(query);
+			
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-			return null;
+			return true;
 		}
-		return this.id;
 		
+		return false;
 	}
 	
 	public static User get(String id) {
-		String query = "SELECT * FROM USER WHERE ID = ?";
+		String query = "SELECT * FROM USERS WHERE ID = ?";
 		try {
 			
 			PreparedStatement ps =  (PreparedStatement) Connector.getConnection().prepareStatement(query);
@@ -154,11 +154,9 @@ public class User {
 			String address = rs.getString("address");
 			Date dOB = rs.getDate("DOB");
 			String telp = rs.getString("telp");
-			User u = new User(UUID.fromString(userID), username, password, role, address, dOB, telp);
-			System.out.println(u);
-			System.out.println(u.getPassword());
 			
-			return u;
+			
+			return new User(UUID.fromString(userID), username, password, role, address, dOB, telp);
 			}catch (SQLException e){
 				System.out.println(e.getMessage());
 			}
@@ -221,6 +219,11 @@ public class User {
 				System.out.println(e.getMessage());
 			}
 		return null;	
+	}
+	
+	public boolean checkPassword(String pass) {
+		if(pass == this.password)return true;
+		else return false;
 	}
 	
 	@Override
