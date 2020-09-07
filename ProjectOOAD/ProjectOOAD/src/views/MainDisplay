@@ -1,0 +1,69 @@
+package views;
+
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import helpers.Env;
+
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+
+public class MainDisplay extends JFrame{
+	private static final long serialVersionUID = 1L;
+	private static MainDisplay instance;
+	public JButton profileDisplay;
+	public JButton createTask;
+	public JButton viewTask;
+	public JButton NotifHistory;
+	
+	public static MainDisplay getInstance() {
+		if(instance == null) {
+			instance = new MainDisplay();
+		}
+		return instance;
+	}
+
+	public MainDisplay() {
+		Font BTNFONT = new Font("Georgia", Font.BOLD, 15);
+		this.setSize(new Dimension(400,600));
+		this.setLocation(Env.dim.width/2-this.getSize().width/2, Env.dim.height/2-this.getSize().height/2);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JPanel navigation = new JPanel();
+		navigation.setLayout((new GridLayout(6,1)));
+		
+		JLabel headerLabel = new JLabel("Task Manager",SwingConstants.CENTER);
+		headerLabel.setFont(new Font("sans-sherif", Font.BOLD, 20));
+		headerLabel.setHorizontalTextPosition(JLabel.CENTER);
+		navigation.add(headerLabel);
+		
+		
+		profileDisplay = new JButton("Profile Display");
+		createTask = new JButton("Create Task");
+		NotifHistory = new JButton("Notification History");
+		viewTask = new JButton("View Task");
+		
+		profileDisplay.setFont(BTNFONT);
+		createTask.setFont(BTNFONT);
+		viewTask.setFont(BTNFONT);
+		NotifHistory.setFont(BTNFONT);
+		
+		navigation.add(profileDisplay);
+		navigation.add(createTask);
+		navigation.add(viewTask);
+		navigation.add(NotifHistory);
+		
+		
+		this.add(navigation);
+		this.setVisible(true);
+	}
+	
+	public void refreshContent(JPanel panel) {
+		
+	}
+}
