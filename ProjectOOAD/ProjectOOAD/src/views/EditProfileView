@@ -1,0 +1,112 @@
+package views;
+
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+import helpers.Env;
+
+public class EditProfileView extends JFrame implements ActionListener{
+	private static final long serialVersionUID = 1L;
+	public JTextField Username;
+	public JTextField DateOfBirth;
+	public JTextField Phone;
+	public JTextField Address;
+	public JButton btnreset;
+	public JButton btnconfirm;
+	
+	private static EditProfileView edv;
+	
+	public static EditProfileView getInstance() {
+		if(edv == null) {
+			edv = new EditProfileView();
+		}
+		return edv;
+	}
+	
+	public EditProfileView(){
+		this.setBounds(100, 100, 350, 400);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLayout(null);
+		
+		Font LABELFONT = new Font("Tahoma", Font.PLAIN, 12);
+		
+		JLabel Header = new JLabel("My Profile");
+		Header.setFont(new Font("Sitka Banner", Font.PLAIN, 20));
+		Header.setBounds(120, 0, 85, 45);
+
+		JLabel lblUsernameLabel = new JLabel("Username");
+		JLabel lblDateOfBirth = new JLabel("Date Of Birth");
+		JLabel lblRole = new JLabel("Role");
+		JLabel lblAddress = new JLabel("Address");
+		JLabel lblPhone = new JLabel("Phone");
+		lblPhone.setFont(LABELFONT);
+		
+
+		lblUsernameLabel.setBounds(95, 50, 60, 20);
+		lblDateOfBirth.setBounds(80, 75, 80, 20);
+		lblRole.setBounds(130, 95, 60, 20);
+		lblAddress.setBounds(105, 110, 60, 20);
+		lblPhone.setBounds(100, 175, 60, 20);
+
+		lblUsernameLabel.setFont(LABELFONT);
+		lblRole.setFont(LABELFONT);
+		lblDateOfBirth.setFont(LABELFONT);
+		lblAddress.setFont(LABELFONT);
+		
+		this.add(Header);
+		this.add(lblUsernameLabel);
+		this.add(lblDateOfBirth);		
+		this.add(lblAddress);		
+		this.add(lblPhone);
+	
+		this.add(lblRole);
+
+		JLabel Role = new JLabel(Env.user.getRole());
+		DateOfBirth = new JTextField(Env.user.getDOB().toString());
+		Username = new JTextField(Env.user.getUsername());
+		Phone = new JTextField(Env.user.getTelp());
+		Address = new JTextField(Env.user.getAddress());
+		
+		DateOfBirth.setBounds(160, 75, 95, 14);
+		Role.setBounds(160, 95, 95, 14);
+		Username.setBounds(162, 55, 95, 14);		
+		Phone.setBounds(160, 180, 95, 14);
+		Address.setBounds(160, 115, 110, 50);
+
+		this.add(Address);
+		this.add(Username);
+		this.add(DateOfBirth);
+		this.add(Role);
+		this.add(Phone);
+		
+		btnreset = new JButton("reset");
+		btnconfirm = new JButton("confirm");
+		btnreset.setBounds(160,200 , 90, 20);
+		btnconfirm.setBounds(60, 200, 90, 20);
+		
+		btnconfirm.addActionListener(this);
+		btnreset.addActionListener(this);
+		
+		this.add(btnconfirm);
+		this.add(btnreset);
+		
+		
+		this.setVisible(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == btnreset) {
+			Username.setText(Env.user.getUsername());
+			DateOfBirth.setText(Env.user.getDOB().toString());
+			Phone.setText(Env.user.getTelp());
+			this.dispose();
+		}
+	}
+}
