@@ -12,15 +12,15 @@ public class TaskHandler {
 		
 	}
 	
-	public Task getTask(String taskID) {
+	public static Task getTask(String taskID) {
 		return Task.getTask(taskID);
 	}
 	
-	public ArrayList<Task> getAll(){
-		return Task.getAllTask();
+	public static ArrayList<Task> getAllTask(){
+		return Task.getAll();
 	}
 	
-	public Task CreateTask(String title, String supervisorID, String workerID, String note) {
+	public static Task CreateTask(String title, String supervisorID, String workerID, String note) {
 		if(Task.getByTitle(title) != null) {
 			System.out.println("Task already Exist");
 			return null;
@@ -31,7 +31,7 @@ public class TaskHandler {
 		return task.save();
 	}
 	
-	public Task updateTask(String taskID, String title, String workerID, String supervisorID, Integer score, String note) {
+	public static Task updateTask(String taskID, String title, String workerID, String supervisorID, Integer score, String note) {
 		Task task = Task.getTask(taskID);
 		task.setTitle(title);
 		task.setWorkerID(UUID.fromString(workerID));
@@ -42,21 +42,19 @@ public class TaskHandler {
 		return task;
 	}
 	
-	public void deleteTask(String taskID) {
+	public static void deleteTask(String taskID) {
 		Task task = Task.getTask(taskID);
 		task.delete();
 	}
 	
-	public Task approveTask(String taskID, Integer score) {
-		getAll();
+	public static Task approveTask(String taskID, Integer score) {
 		Task task = Task.getTask(taskID);
 		task.setScore(score);
 		task.update();
 		return task;
 	}
 	
-	public Task requestTaskRevision(String taskID) {
-		getAll();
+	public static Task requestTaskRevision(String taskID) {
 		Task task = Task.getTask(taskID);
 		Integer temp = task.getRevisionCount();
 		task.setRevisionCount(temp++);
@@ -64,15 +62,14 @@ public class TaskHandler {
 		return task;
 	}
 	
-	public Task submitTask(String taskID) {
-		getAll();
+	public static Task submitTask(String taskID) {
 		Task task = Task.getTask(taskID);
 		task.setIsSubmitted(true);
 		task.update();
 		return task;
 	}
 	
-	public ArrayList<Task> searchTask(String query){
+	public static ArrayList<Task> searchTask(String query){
 		return Task.search(query);
 	}
 	
