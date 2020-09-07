@@ -4,17 +4,37 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.util.UUID;
 
+import javax.swing.JOptionPane;
+
+import helpers.Env;
 import helpers.Utils;
 import models.User;
 
 public class UserController {
 
 	public UserController() {
-		
 	}
+
+	
+	public User UserLogin(String uname, String password) throws Exception {
+		User user = this.getByUname(uname);
+		
+		if(user == null) {
+			throw new Exception();
+		}else if(!user.getPassword().equals(password)) {
+			System.out.println("/" + user.getPassword() + "/" + password + "/");
+			throw new Exception();
+		}
+		return user;
+	}
+	
 	
 	public User getUser(String userID) {
 		return User.get(userID);
+	}
+	
+	public User getByUname(String name) {
+		return User.getByUname(name);
 	}
 	
 	public  ArrayList<User> getAllUser(){
@@ -32,7 +52,7 @@ public class UserController {
 		
 		if(!Utils.Validate(username, password, role, DOB, Address, telp)) return null; // not successfully createuser
 		if(User.getByUname(username) != null) {
-			System.out.println("Username Already Exist");
+			JOptionPane.showMessageDialog(null, "User Already Exist");
 			return null;
 		}
 		
@@ -45,24 +65,17 @@ public class UserController {
 		return u;
 	}
 	
-	public User login(String uname, String password){
-		User user = User.getByUname(uname);
-		if(user == null || user.getPassword() != password) return null;
-	
-		return user;
-	}
-	
 	public boolean checkpass(User u, String pass) {
+		
 		if(u.getPassword() == pass) return true;
 		return false;
 	}
 	
-	public void deleteUser(String ID) {
+	public String deleteUser(String ID) {
 		User u = User.get(ID);
-		if(u == null) System.out.println("ID does not exist!");
-		else if(u.delete()) System.out.println("deleted");
-		else System.out.println("Cannot perform action");
-		return;
+		if(u == null) return null;
+		else if(u.delete()) JOptionPane.showMessageDialog(null, "Deleted");
+		return ID;
 	}
 	
 	public User UpdateProfile(String Usermame, String Password, String Role, Date DOB, String Address, String telp) {
@@ -71,20 +84,20 @@ public class UserController {
 		return u;
 	}
 	
- 	public User resetPassword(String userID){
-		User.instance = User.get(userID);
-		String newpass = User.instance.getDOB().toString();
-		User.instance.setPassword(newpass); 
+ 	public User resetPassword(String uuid){
+ 		User u = User.get(uuid);
+		String newpass = u.getDOB().toString();
+		u.setPassword(newpass); 
 		
-		return User.instance;
+		return u.Update();
 	}
 	
 	public User changePassword(String oldPass, String newPass) {
-		if(User.instance.checkPassword(oldPass)) return null;
+		if(Env.user.checkPassword(oldPass)) return null;
 		
-		User.instance.setPassword(newPass);
+		Env.user.setPassword(newPass);
 		
-		return User.instance;
+		return Env.user;
 	}
 	
 
