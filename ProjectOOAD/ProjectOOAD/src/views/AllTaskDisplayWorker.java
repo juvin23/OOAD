@@ -27,14 +27,14 @@ import helpers.Env;
 import models.Task;
 import models.User;
 
-public class AllTaskDiplayWorker extends JPanel {
+public class AllTaskDisplayWorker extends JPanel {
 	private JTable table;
 	private DefaultTableModel userlist;
 	private JTextField searching;
 	/**
 	 * Create the panel.
 	 */
-	public AllTaskDiplayWorker() {
+	public AllTaskDisplayWorker() {
 		setSize(new Dimension(1400, 800));
 		setLayout(new BorderLayout(0, 0));
 		
