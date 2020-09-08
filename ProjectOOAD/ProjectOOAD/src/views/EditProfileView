@@ -3,12 +3,14 @@ package views;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import controllers.UserController;
 import helpers.Env;
 
 public class EditProfileView extends JFrame implements ActionListener{
@@ -107,6 +109,12 @@ public class EditProfileView extends JFrame implements ActionListener{
 			DateOfBirth.setText(Env.user.getDOB().toString());
 			Phone.setText(Env.user.getTelp());
 			this.dispose();
+		}else {
+			
+			UserController.getInstance().UpdateProfile(Username.getText(), Env.user.getPassword(), Env.user.getRole(),
+															Date.valueOf(DateOfBirth.getText()), Address.getText(), Phone.getText());
 		}
+		this.dispose();
+		MainDisplay.getInstance().setVisible(true);
 	}
 }
