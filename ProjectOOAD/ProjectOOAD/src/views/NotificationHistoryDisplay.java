@@ -26,10 +26,10 @@ public class NotificationHistoryDisplay extends JFrame {
 	private JTable table;
 	private DefaultTableModel model;
 	
-	private NotificationHistoryDisplay display;
+	private static NotificationHistoryDisplay display;
 	
 	
-	public NotificationHistoryDisplay getInstance(User user) {
+	public static NotificationHistoryDisplay getInstance(User user) {
 		if(display == null) {
 			display = new NotificationHistoryDisplay(user);
 		}
