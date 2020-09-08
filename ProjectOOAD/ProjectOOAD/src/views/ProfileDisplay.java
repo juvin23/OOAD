@@ -23,6 +23,7 @@ public class ProfileDisplay extends JFrame implements ActionListener{
 	public JButton btnEditProfile;
 	public JButton btnResetPassword;
 	public JButton btnChangePassword;
+	public JButton btnHome;
 	private UserController uc = new UserController();
 	
 	private static ProfileDisplay pd;
@@ -39,8 +40,7 @@ public class ProfileDisplay extends JFrame implements ActionListener{
 	}
 
 	private void initialize(User user) {
-		this.setBounds(100, 100, 332, 392);
-		this.getContentPane().setLayout(null);
+		this.setBounds(100, 100, 350, 400);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		Font LABELFONT = new Font("Tahoma", Font.PLAIN, 12);
@@ -111,14 +111,12 @@ public class ProfileDisplay extends JFrame implements ActionListener{
 		Phone.setBounds(162, 179, 95, 14);
 		this.getContentPane().add(Phone);
 		
-		JButton btnHome = new JButton(". . .");
-		btnHome.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
+		btnHome = new JButton(". . .");
 		btnHome.setBounds(136, 306, 43, 35);
+		btnHome.addActionListener(this);
 		this.getContentPane().add(btnHome);
 		
+	
 		JLabel Address = new JLabel(user.getAddress());
 		Address.setBounds(164, 118, 108, 53);
 		this.getContentPane().add(Address);
@@ -130,10 +128,15 @@ public class ProfileDisplay extends JFrame implements ActionListener{
 		if(e.getSource() == btnResetPassword) {
 			uc.resetPassword(Env.user.getUserID().toString());
 			JOptionPane.showMessageDialog(null, "Password is set to deafault (yyyy-MM-dd)!");
-			this.dispose();
 			MainDisplay.getInstance().setVisible(true);
 		}else if(e.getSource() == btnEditProfile) {
 			EditProfileView.getInstance();
-		} 
+		}else if(e.getSource() == btnChangePassword) {
+			ChangePassword.getInstance();
+		}else if(e.getSource() == btnHome) {
+
+		}
+		this.dispose();
+		MainDisplay.getInstance().setVisible(true);
 	}
 }
