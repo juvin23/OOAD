@@ -95,7 +95,8 @@ public class AllTaskRequestDisplay extends JFrame {
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//calling main menu
-				MainDisplay.getInstance();
+				display.dispose();
+				MainDisplay.getInstance().setVisible(true);
 			}
 		});
 		
