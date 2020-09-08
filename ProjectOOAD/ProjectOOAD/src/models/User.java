@@ -231,38 +231,75 @@ public class User {
 		// TODO Auto-generated method stub
 		return super.toString();
 	}
-	
-	//setter and getter
-	public String getUsername() {
-		return username;
-	}
-	
-	public String getRole() {
-		return role;
-	}
-	
-	public String getAddress() {
-		return address;
-	}
-	
-	public Date getDOB() {
-		return DOB;
-	}
-	
-	public String getTelp() {
-		return telp;
-	}
-	
+
+
 	public UUID getUserID() {
 		return id;
 	}
-	
-	public void setPassword(String pass) {
-		this.password = pass;
+
+
+	public void setId(UUID id) {
+		this.id = id;
 	}
-	
+
+
+	public String getUsername() {
+		return username;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
 	public String getPassword() {
-		return this.password;
+		return password;
+	}
+
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+
+	public String getRole() {
+		return role;
+	}
+
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+
+	public String getAddress() {
+		return address;
+	}
+
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+
+	public Date getDOB() {
+		return DOB;
+	}
+
+
+	public void setDOB(Date dOB) {
+		DOB = dOB;
+	}
+
+
+	public String getTelp() {
+		return telp;
+	}
+
+
+	public void setTelp(String telp) {
+		this.telp = telp;
 	}
 	
 }
