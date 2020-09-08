@@ -11,6 +11,15 @@ import helpers.Utils;
 import models.User;
 
 public class UserController {
+	
+	private static UserController uc;
+	
+	public static UserController getInstance() {
+		if(uc == null) {
+			uc = new UserController();
+		}
+		return uc;
+	}
 
 	public UserController() {
 	}
@@ -80,8 +89,10 @@ public class UserController {
 	
 	public User UpdateProfile(String Usermame, String Password, String Role, Date DOB, String Address, String telp) {
 		User u = User.getByUname(Usermame);
-		
-		return u;
+		u.setAddress(Address);
+		u.setDOB(DOB);
+		u.setTelp(telp);
+		return u.Update();
 	}
 	
  	public User resetPassword(String uuid){
@@ -97,7 +108,7 @@ public class UserController {
 		
 		Env.user.setPassword(newPass);
 		
-		return Env.user;
+		return Env.user.Update();
 	}
 	
 
