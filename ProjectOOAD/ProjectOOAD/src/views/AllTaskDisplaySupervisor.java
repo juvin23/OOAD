@@ -20,6 +20,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import controllers.TaskHandler;
+import controllers.UserController;
 import helpers.Env;
 import models.Task;
 import models.User;
@@ -36,6 +37,15 @@ public class AllTaskDisplaySupervisor extends JPanel {
 	private JTable table;
 	private DefaultTableModel userlist;
 	private JTextField searching;
+	
+	private static AllTaskDisplaySupervisor atds;
+	
+	public static AllTaskDisplaySupervisor getInstance() {
+		if(atds == null) {
+			atds = new AllTaskDisplaySupervisor();
+		}
+		return atds;
+	}
 
 	/**
 	 * Create the panel.
@@ -178,10 +188,23 @@ public class AllTaskDisplaySupervisor extends JPanel {
 				userlist.addRow(new Object[] {taskId, worker, supervisor, title, revisionCount, score, isSubmitted, approveAt, note});
 			}
 		}
-//		if(searchby.equals("Supervisor Name") || searchby.equals("Worker Name")) {
-//			User.
-//			query = "SELECT * FROM task WHERE"+ searchby +" = '" + search +"'";
-//		}
+		if(searchby.equals("Supervisor Name") || searchby.equals("Worker Name")) {
+			query = "SELECT * FROM task WHERE"+ searchby +" = '" + search +"'";
+			temp = TaskHandler.searchTask(query);
+			for(Task task : temp) {
+				String taskId = task.getId().toString();
+				String worker = User.get(task.getWorkerID().toString()).getUsername();
+				String supervisor = User.get(task.getSupervisorID().toString()).getUsername();
+				String title = task.getTitle();
+				Integer revisionCount = task.getRevisionCount();
+				Integer score = task.getScore();
+				Boolean isSubmitted = task.getIsSubmitted();
+				java.sql.Timestamp approveAt = task.getApprovedAt();
+				String note = task.getNote();
+				 			
+				userlist.addRow(new Object[] {taskId, worker, supervisor, title, revisionCount, score, isSubmitted, approveAt, note});
+			}
+		}
 	}
 	
 	public void sorted(String sortby, String sortdirection) {
