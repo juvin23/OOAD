@@ -122,16 +122,20 @@ public class Task {
 	}
 	
 	public Task save() {
-		String query = "INSERT INTO tasks() VALUES(?,?,?,?,?)";
+		String query = "INSERT INTO tasks() VALUES(?,?,?,?,?,?,?,?,?)";
 		
 		PreparedStatement ps;
 		try {
 			ps = (PreparedStatement) Connector.getConnection().prepareStatement(query);
 			ps.setString(1, this.getId().toString());
-			ps.setString(2, this.getTitle());
+			ps.setString(2, this.getWorkerID().toString());
 			ps.setString(3, this.getSupervisorID().toString());
-			ps.setString(4, this.getWorkerID().toString());
-			ps.setString(5, this.getNote());
+			ps.setString(4, this.getTitle());
+			ps.setInt(5, this.getRevisionCount());
+			ps.setInt(6, this.getScore());
+			ps.setBoolean(7, this.getIsSubmitted());
+			ps.setTimestamp(8, this.getApprovedAt());
+			ps.setString(9, this.getNote());
 			ps.executeUpdate();
 			
 		} catch (SQLException e) {
